@@ -1,12 +1,13 @@
 <html ng-app="listaTelefonica">
 
 <head>
+    <meta charset="UTF-8">
     <title>Hello World</title>
     <script src="angular-1.6.6/angular.js"></script>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <style>
         .jumbotron {
-            width: 400px;
+            width: 500px;
             text-align: center;
             margin-left: auto;
             margin-right: auto;
@@ -38,9 +39,9 @@
         angular.module("listaTelefonica").controller("listaTelefonicaCtrl", function ($scope) {
             $scope.app = "Lista Telefonica";
             $scope.contatos = [
-                { nome: "Pedro", telefone: "9854-8657" },
-                { nome: "Ana", telefone: "9856-1236" },
-                { nome: "Maria", telefone: "9874-6325" }];
+                { nome: "Pedro", telefone: "9854-8657", selecionado: false, cor: "yellow" },
+                { nome: "Ana", telefone: "9856-1236", selecionado: false, cor: "blue" },
+                { nome: "Maria", telefone: "9874-6325", selecionado: false, cor: "red" }];
 
             $scope.adicionarContato = function (contato) {
                 $scope.contatos.push(angular.copy(contato));
@@ -58,13 +59,15 @@
             $scope.apagarContato = function (contatos) {
                 $scope.contatos = contatos.filter(function (contato) {
                     if (!contato.selecionado) return contato;
-                });                
+                });
             };
 
             $scope.isContatoSelecionado = function (contatos) {
-                var isSelecionado = contatos.some(function (contato) {
+                var selecionado = false;
+                var selecionado = contatos.some(function (contato) {
                     return contato.selecionado;
-                });                
+                });
+                return selecionado;
             };
         });
     </script>
@@ -79,13 +82,18 @@
                 <th>Nome</th>
                 <th>Telefone</th>
                 <th>Operadora</th>
+                <th>Cor</th>
             </tr>
             <tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos">
                 <td>
-                    <input type="checkbox" ng-model="contato.selecionado" /> </td>
+                    <input type="checkbox" ng-model="contato.selecionado" />
+                </td>
                 <td>{{contato.nome}}</td>
                 <td>{{contato.telefone}}</td>
                 <td>{{contato.operadora.nome}}</td>
+                <td>
+                    <div style="width: 20px; height: 20px;" ng-style="{'background-color':contato.cor}"></div>
+                </td>
             </tr>
         </table>
         <hr/>
@@ -95,9 +103,10 @@
             <option value="">Selecione uma operadora</option>
         </select>
         <button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">Adicionar Contato</button>
-        <button class="btn btn-danger btn-block" ng-click="apagarContato(contatos)" ng-show="isContatoSelecionado(contatos)">Apagar Contato</button>
-        <!-- {{operadoras}}  -->
+        <button class="btn btn-danger btn-block" ng-click="apagarContato(contatos)" ng-if="isContatoSelecionado(contatos)">Apagar Contato</button>
+        <!-- {{operadoras}}  -->       
     </div>
+    <div ng-include="'footer.html'"></div>
 </body>
 
 </html>
